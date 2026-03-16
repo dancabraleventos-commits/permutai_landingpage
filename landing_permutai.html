@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Permutaí — Permuta Inteligente | Seja um Corretor Embaixador</title>
+<meta name="description" content="A primeira plataforma de permuta imobiliária inteligente do Vale do Paraíba. Match automático entre corretores. Grátis para embaixadores fundadores.">
+<meta property="og:title" content="Permutaí — Feche mais permutas com algoritmo inteligente">
+<meta property="og:description" content="Cadastre seus imóveis, o algoritmo encontra os matches. Acesso gratuito para os primeiros 30 corretores embaixadores do Vale do Paraíba.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#fff;color:#0A1628;overflow-x:hidden}
+:root{
+  --navy:#0A1628;--navy-mid:#0D1F3C;--blue:#1565C0;--blue-light:#1E90FF;
+  --cyan:#29B6F6;--white:#fff;--gray:#94A3B8;--gray-light:#F0F4F8;
+  --success:#10B981;--warning:#F59E0B
+}
+.btn-primary{background:linear-gradient(135deg,#1565C0,#1E90FF);color:#fff;border:none;border-radius:12px;padding:16px 32px;font-family:'Plus Jakarta Sans',sans-serif;font-size:16px;font-weight:700;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(21,101,192,.4)}
+.btn-secondary{background:transparent;color:#1E90FF;border:2px solid #1E90FF;border-radius:12px;padding:14px 28px;font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-block}
+.btn-secondary:hover{background:#1E90FF;color:#fff}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,22,40,.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.06);padding:16px 24px}
+.nav-inner{max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center}
+.nav-logo{font-size:20px;font-weight:800;color:#fff}
+.nav-logo span{color:#29B6F6}
+.nav-links{display:flex;gap:32px;list-style:none}
+.nav-links a{color:rgba(255,255,255,.6);text-decoration:none;font-size:14px;font-weight:500;transition:color .2s}
+.nav-links a:hover{color:#fff}
+.nav-cta{display:flex;gap:12px;align-items:center}
+.nav-login{color:rgba(255,255,255,.7);text-decoration:none;font-size:14px;font-weight:500;transition:color .2s}
+.nav-login:hover{color:#fff}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#0A1628 0%,#0D1F3C 60%,#0D2347 100%);min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;padding:120px 24px 80px}
+.hero::before{content:'';position:absolute;top:-200px;right:-200px;width:700px;height:700px;border-radius:50%;border:1px solid rgba(41,182,246,.05);pointer-events:none}
+.hero::after{content:'';position:absolute;bottom:-150px;left:-150px;width:500px;height:500px;border-radius:50%;border:1px solid rgba(41,182,246,.04);pointer-events:none}
+.hero-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;width:100%}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(41,182,246,.12);border:1px solid rgba(41,182,246,.3);border-radius:20px;padding:6px 16px;margin-bottom:24px}
+.hero-badge span{color:#29B6F6;font-size:13px;font-weight:600}
+.hero h1{font-size:clamp(2rem,4vw,3.2rem);font-weight:800;color:#fff;line-height:1.15;margin-bottom:20px}
+.hero h1 em{font-style:normal;color:#29B6F6}
+.hero p{font-size:17px;color:rgba(255,255,255,.7);line-height:1.7;margin-bottom:36px;max-width:520px}
+.hero-btns{display:flex;gap:16px;flex-wrap:wrap}
+.hero-stats{display:flex;gap:32px;margin-top:48px;padding-top:32px;border-top:1px solid rgba(255,255,255,.1);flex-wrap:wrap}
+.stat-item{text-align:center}
+.stat-num{font-size:28px;font-weight:800;color:#fff;display:block}
+.stat-label{font-size:12px;color:#94A3B8;text-transform:uppercase;letter-spacing:.5px}
+
+/* HERO VISUAL */
+.hero-visual{display:flex;flex-direction:column;gap:16px}
+.match-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:20px;backdrop-filter:blur(10px)}
+.match-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.match-title{font-size:12px;font-weight:600;color:#29B6F6;text-transform:uppercase;letter-spacing:.5px}
+.match-badge{background:rgba(16,185,129,.2);color:#6EE7B7;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px}
+.match-props{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center}
+.prop-box{background:rgba(255,255,255,.05);border-radius:10px;padding:12px}
+.prop-type{font-size:11px;color:#94A3B8;margin-bottom:4px}
+.prop-val{font-size:14px;font-weight:700;color:#fff}
+.prop-loc{font-size:11px;color:#94A3B8}
+.match-arrow{color:#29B6F6;font-size:20px;font-weight:800;text-align:center}
+.match-footer{display:flex;justify-content:space-between;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.08)}
+.match-meta{font-size:11px;color:#94A3B8}
+.prm-code{font-family:monospace;font-size:11px;background:rgba(255,255,255,.08);padding:2px 8px;border-radius:4px;color:rgba(255,255,255,.6)}
+
+/* SECTIONS */
+.section{padding:96px 24px}
+.section-inner{max-width:1100px;margin:0 auto}
+.section-label{font-size:13px;font-weight:700;color:#1E90FF;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+.section h2{font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:800;color:#0A1628;margin-bottom:16px;line-height:1.2}
+.section-sub{font-size:17px;color:#94A3B8;max-width:560px;line-height:1.7}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:64px;position:relative}
+.steps::before{content:'';position:absolute;top:24px;left:calc(16.66% + 16px);right:calc(16.66% + 16px);height:2px;background:linear-gradient(90deg,#1565C0,#1E90FF);z-index:0}
+.step{position:relative;z-index:1}
+.step-num{width:48px;height:48px;background:linear-gradient(135deg,#1565C0,#1E90FF);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff;margin-bottom:20px}
+.step h3{font-size:18px;font-weight:700;color:#0A1628;margin-bottom:8px}
+.step p{font-size:15px;color:#94A3B8;line-height:1.7}
+
+/* PROMO */
+.promo{background:linear-gradient(135deg,#0A1628,#0D2347);padding:96px 24px;position:relative;overflow:hidden}
+.promo::before{content:'';position:absolute;top:-100px;right:-100px;width:500px;height:500px;border-radius:50%;border:1px solid rgba(41,182,246,.05)}
+.promo::after{content:'';position:absolute;bottom:-80px;left:-80px;width:300px;height:300px;border-radius:50%;border:1px solid rgba(41,182,246,.04)}
+.promo-inner{max-width:1000px;margin:0 auto;position:relative;z-index:1}
+.promo-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.3);border-radius:20px;padding:6px 16px;margin-bottom:24px}
+.promo-badge span{color:#F59E0B;font-size:13px;font-weight:600}
+.promo h2{font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:800;color:#fff;margin-bottom:16px;line-height:1.2}
+.promo-sub{font-size:17px;color:rgba(255,255,255,.7);line-height:1.7;margin-bottom:48px;max-width:640px}
+.promo-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-bottom:40px}
+.promo-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:32px;text-align:center;transition:all .2s}
+.promo-card:hover{background:rgba(255,255,255,.1);transform:translateY(-4px)}
+.promo-card.destaque{border-color:rgba(41,182,246,.4);background:rgba(41,182,246,.08)}
+.promo-num{font-size:52px;font-weight:800;color:#29B6F6;display:block;line-height:1}
+.promo-imoveis{font-size:16px;font-weight:600;color:#fff;margin:8px 0 4px}
+.promo-desc{font-size:13px;color:#94A3B8;margin-bottom:12px}
+.promo-tag{display:inline-block;background:rgba(16,185,129,.15);color:#6EE7B7;font-size:11px;font-weight:600;padding:4px 12px;border-radius:20px}
+.counter-visual{background:rgba(41,182,246,.08);border:1px solid rgba(41,182,246,.2);border-radius:16px;padding:28px;margin-bottom:40px}
+.counter-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.counter-title{font-size:15px;font-weight:600;color:#29B6F6}
+.counter-badge{background:rgba(41,182,246,.15);color:#29B6F6;font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px}
+.counter-bar-bg{background:rgba(255,255,255,.08);border-radius:8px;height:14px;margin-bottom:12px;overflow:hidden}
+.counter-bar{background:linear-gradient(90deg,#29B6F6,#1E90FF);height:14px;border-radius:8px;width:60%;transition:width 1s ease}
+.counter-meta{display:flex;justify-content:space-between;font-size:13px;color:#94A3B8}
+.promo-cta{text-align:center;margin-bottom:32px}
+.promo-rule{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:20px 24px}
+.promo-rule p{font-size:13px;color:rgba(255,255,255,.45);line-height:1.8}
+.promo-rule strong{color:rgba(255,255,255,.7)}
+
+/* FEATURES */
+.features{background:#F0F4F8;padding:96px 24px}
+.features-inner{max-width:1100px;margin:0 auto}
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:64px}
+.feature-card{background:#fff;border-radius:16px;padding:32px;border:1px solid #E2E8F0;transition:all .2s}
+.feature-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.08)}
+.feature-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;font-size:24px}
+.feature-card h3{font-size:17px;font-weight:700;color:#0A1628;margin-bottom:8px}
+.feature-card p{font-size:14px;color:#94A3B8;line-height:1.7}
+
+/* GRAFO */
+.grafo-section{padding:96px 24px;background:#fff}
+.grafo-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.grafo-visual{background:#0A1628;border-radius:20px;padding:32px;position:relative;overflow:hidden}
+.grafo-visual::before{content:'';position:absolute;top:-80px;right:-80px;width:240px;height:240px;border-radius:50%;border:1px solid rgba(41,182,246,.08)}
+.node-grid{display:grid;grid-template-columns:1fr 48px 1fr;gap:12px;align-items:center}
+.node{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:16px;text-align:center}
+.node-type{font-size:18px;margin-bottom:6px}
+.node-name{font-size:12px;font-weight:600;color:#fff;margin-bottom:2px}
+.node-val{font-size:11px;color:#94A3B8}
+.node-connector{display:flex;flex-direction:column;align-items:center;gap:4px}
+.conn-line-v{width:2px;height:28px;background:linear-gradient(180deg,#29B6F6,#1E90FF)}
+.conn-line-h{width:100%;height:2px;background:linear-gradient(90deg,#29B6F6,#1E90FF)}
+.conn-dot{width:8px;height:8px;border-radius:50%;background:#29B6F6}
+.grafo-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.25);border-radius:20px;padding:6px 14px;margin-top:20px}
+.grafo-badge span{color:#6EE7B7;font-size:12px;font-weight:600}
+.grafo-row-spacer{grid-column:1/-1;height:8px}
+
+/* DEPOIMENTOS */
+.depoimentos{background:#F0F4F8;padding:96px 24px}
+.depo-inner{max-width:1100px;margin:0 auto}
+.depo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:56px}
+.depo-card{background:#fff;border-radius:16px;padding:28px;border:1px solid #E2E8F0}
+.depo-stars{color:#F59E0B;font-size:16px;margin-bottom:16px;letter-spacing:2px}
+.depo-text{font-size:14px;color:#475569;line-height:1.8;margin-bottom:20px}
+.depo-author{display:flex;align-items:center;gap:12px;padding-top:16px;border-top:1px solid #F1F5F9}
+.depo-avatar{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#fff;flex-shrink:0}
+.depo-name{font-size:14px;font-weight:600;color:#0A1628}
+.depo-role{font-size:12px;color:#94A3B8;margin-top:2px}
+
+/* CTA FINAL */
+.cta-final{background:linear-gradient(135deg,#0A1628,#0D2347);padding:112px 24px;text-align:center;position:relative;overflow:hidden}
+.cta-final::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:700px;border-radius:50%;border:1px solid rgba(41,182,246,.05)}
+.cta-inner{max-width:700px;margin:0 auto;position:relative;z-index:1}
+.cta-final h2{font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:800;color:#fff;margin-bottom:16px;line-height:1.2}
+.cta-final p{font-size:17px;color:rgba(255,255,255,.7);margin-bottom:40px;line-height:1.7}
+.cta-btns{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.cta-sub{font-size:13px;color:rgba(255,255,255,.35)}
+
+/* FOOTER */
+footer{background:#0A1628;padding:56px 24px;border-top:1px solid rgba(255,255,255,.06)}
+.footer-inner{max-width:1100px;margin:0 auto}
+.footer-top{display:grid;grid-template-columns:2fr 1fr 1fr;gap:48px;margin-bottom:48px}
+.footer-brand{font-size:22px;font-weight:800;color:#fff;margin-bottom:12px}
+.footer-brand span{color:#29B6F6}
+.footer-desc{font-size:14px;color:rgba(255,255,255,.4);line-height:1.7;max-width:280px}
+.footer-col h4{font-size:13px;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:.5px;margin-bottom:16px}
+.footer-col ul{list-style:none}
+.footer-col li{margin-bottom:10px}
+.footer-col a{font-size:14px;color:rgba(255,255,255,.45);text-decoration:none;transition:color .2s}
+.footer-col a:hover{color:#fff}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.06);padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.footer-copy{font-size:13px;color:rgba(255,255,255,.25)}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .hero-inner{grid-template-columns:1fr}
+  .hero-visual{display:none}
+  .steps::before{display:none}
+  .steps,.promo-cards,.features-grid,.depo-grid{grid-template-columns:1fr}
+  .grafo-inner{grid-template-columns:1fr}
+  .footer-top{grid-template-columns:1fr}
+  nav .nav-links{display:none}
+  .footer-bottom{flex-direction:column;text-align:center}
+}
+@media(max-width:600px){
+  .hero-stats{gap:20px}
+  .hero-btns{flex-direction:column}
+  .cta-btns{flex-direction:column;align-items:center}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">Permuta<span>í</span></div>
+    <ul class="nav-links">
+      <li><a href="#como-funciona">Como funciona</a></li>
+      <li><a href="#embaixador">Programa embaixador</a></li>
+      <li><a href="#features">Funcionalidades</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="https://permutai.lovable.app/login" class="nav-login">Entrar</a>
+      <a href="https://permutai.lovable.app" class="btn-primary" style="padding:10px 20px;font-size:14px">Criar conta grátis</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-badge"><span>30 vagas de embaixador — Vale do Paraíba</span></div>
+      <h1>Feche mais permutas.<br>O algoritmo encontra<br><em>os matches por você.</em></h1>
+      <p>Cadastre seus imóveis, defina as regras de permuta e o sistema cruza automaticamente com a carteira de outros corretores. Permutas simples e triangulações — em segundos.</p>
+      <div class="hero-btns">
+        <a href="https://permutai.lovable.app" class="btn-primary">Quero ser embaixador</a>
+        <a href="#como-funciona" class="btn-secondary">Ver como funciona</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item"><span class="stat-num">30</span><span class="stat-label">vagas disponíveis</span></div>
+        <div class="stat-item"><span class="stat-num">12</span><span class="stat-label">meses gratuito</span></div>
+        <div class="stat-item"><span class="stat-num">3</span><span class="stat-label">cidades atendidas</span></div>
+        <div class="stat-item"><span class="stat-num">0</span><span class="stat-label">taxa de cadastro</span></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="match-card">
+        <div class="match-header">
+          <span class="match-title">Match encontrado</span>
+          <span class="match-badge">Compatível</span>
+        </div>
+        <div class="match-props">
+          <div class="prop-box">
+            <div class="prop-type">Seu imóvel</div>
+            <div class="prop-val">Apartamento 3Q</div>
+            <div class="prop-loc">R$ 650.000 · SJC</div>
+          </div>
+          <div class="match-arrow">⇄</div>
+          <div class="prop-box">
+            <div class="prop-type">Imóvel compatível</div>
+            <div class="prop-val">Casa 4Q</div>
+            <div class="prop-loc">R$ 620.000 · Jacareí</div>
+          </div>
+        </div>
+        <div class="match-footer">
+          <span class="match-meta">Corretor: R.M. · Jacareí</span>
+          <span class="prm-code">PRM-0042</span>
+        </div>
+      </div>
+      <div class="match-card">
+        <div class="match-header">
+          <span class="match-title">Triangulação detectada</span>
+          <span class="match-badge" style="background:rgba(41,182,246,.15);color:#29B6F6">3 imóveis · 3 corretores</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <div class="prop-box" style="flex:1"><div class="prop-type">Apto SJC</div><div class="prop-val" style="font-size:13px">R$ 480k</div></div>
+          <div style="color:#29B6F6;font-weight:800;font-size:18px">→</div>
+          <div class="prop-box" style="flex:1"><div class="prop-type">Casa Caç.</div><div class="prop-val" style="font-size:13px">R$ 510k</div></div>
+          <div style="color:#29B6F6;font-weight:800;font-size:18px">→</div>
+          <div class="prop-box" style="flex:1"><div class="prop-type">Terreno Jac.</div><div class="prop-val" style="font-size:13px">R$ 490k</div></div>
+        </div>
+        <div style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.08);font-size:11px;color:#94A3B8">3 corretores notificados simultaneamente</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMO FUNCIONA -->
+<section class="section" id="como-funciona">
+  <div class="section-inner">
+    <div class="section-label">Como funciona</div>
+    <h2>Do cadastro ao match em minutos</h2>
+    <p class="section-sub">Sem planilha, sem grupo de WhatsApp, sem depender de indicação. O algoritmo trabalha enquanto você atende clientes.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Cadastre o imóvel</h3>
+        <p>Informe tipo, valor, localização e as regras de permuta — o que aceita trocar, em qual cidade, com ou sem complemento financeiro. Cada imóvel recebe um código único PRM.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>Algoritmo cruza as carteiras</h3>
+        <p>O sistema analisa automaticamente todos os imóveis da plataforma e identifica compatibilidades — permutas simples e triangulações de 3 partes em cadeia.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Match aparece, você age</h3>
+        <p>Quando encontrar um match, você recebe notificação. Aceita os termos de intermediação e parte direto para a negociação com o outro corretor. Proteção jurídica garantida.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROMO -->
+<section class="promo" id="embaixador">
+  <div class="promo-inner">
+    <div class="promo-badge"><span>Oferta exclusiva para embaixadores fundadores</span></div>
+    <h2>Cadastre imóveis.<br>Ganhe dias <span style="color:#29B6F6">Pro gratuitos.</span></h2>
+    <p class="promo-sub">A cada 10 imóveis novos com permuta cadastrados na plataforma, você ganha mais 30 dias de acesso Pro — renovável enquanto você mantiver a carteira ativa.</p>
+    <div class="promo-cards">
+      <div class="promo-card">
+        <span class="promo-num">10</span>
+        <div class="promo-imoveis">imóveis cadastrados</div>
+        <div class="promo-desc">com permuta habilitado</div>
+        <div class="promo-tag">= 30 dias Pro grátis</div>
+      </div>
+      <div class="promo-card destaque">
+        <span class="promo-num">20</span>
+        <div class="promo-imoveis">imóveis cadastrados</div>
+        <div class="promo-desc">com permuta habilitado</div>
+        <div class="promo-tag">= 60 dias Pro grátis</div>
+      </div>
+      <div class="promo-card">
+        <span class="promo-num">30</span>
+        <div class="promo-imoveis">imóveis cadastrados</div>
+        <div class="promo-desc">com permuta habilitado</div>
+        <div class="promo-tag">= 90 dias Pro grátis</div>
+      </div>
+    </div>
+    <div class="counter-visual">
+      <div class="counter-header">
+        <span class="counter-title">Seu progresso é registrado automaticamente</span>
+        <span class="counter-badge">Renovação automática</span>
+      </div>
+      <div class="counter-bar-bg"><div class="counter-bar" id="progressBar"></div></div>
+      <div class="counter-meta">
+        <span id="progressText">6 de 10 imóveis cadastrados</span>
+        <span id="progressRemain">Faltam 4 para renovar</span>
+      </div>
+    </div>
+    <div class="promo-cta">
+      <a href="https://permutai.lovable.app" class="btn-primary" style="font-size:17px;padding:18px 48px">Quero ser embaixador gratuitamente</a>
+    </div>
+    <div class="promo-rule">
+      <p><strong>* Regras da promoção:</strong> Apenas imóveis novos cadastrados após o início da conta contam para o contador. Imóveis já existentes na plataforma no momento do cadastro não são computados. Os imóveis precisam estar ativos, com status de permuta habilitado e dados completos (tipo, valor, localização e regras de permuta preenchidos). Imóveis pausados ou removidos são descontados do total. O sistema exibe em tempo real quantos imóveis válidos você tem e quantos faltam para o próximo período Pro. Imóveis duplicados com o mesmo endereço de outro corretor contam normalmente para o seu contador individual.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="features-inner">
+    <div class="section-label">Funcionalidades</div>
+    <h2>Tudo que você precisa para fechar permutas</h2>
+    <p class="section-sub">Ferramentas que corretores sérios precisam — e que não existiam em nenhum outro lugar.</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(21,101,192,.1)">🔄</div>
+        <h3>Match automático</h3>
+        <p>O algoritmo cruza todos os imóveis da plataforma 24h por dia. Você recebe o match, não precisa procurar.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(41,182,246,.1)">🔺</div>
+        <h3>Triangulação inteligente</h3>
+        <p>Identifica quando 3 imóveis de 3 corretores diferentes podem ser trocados em cadeia — o grafo que nenhuma planilha faz.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(16,185,129,.1)">📋</div>
+        <h3>Termo de intermediação</h3>
+        <p>Proteção jurídica embutida. Aceita os termos direto na plataforma antes de revelar os dados completos do outro corretor.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(245,158,11,.1)">🌐</div>
+        <h3>Landing page do imóvel</h3>
+        <p>Cada imóvel ganha uma página profissional gerada por IA para compartilhar com clientes. Com código PRM único e exclusivo.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(21,101,192,.1)">📊</div>
+        <h3>Saúde da carteira</h3>
+        <p>Dashboard com taxa de atualização, imóveis ativos, matches pendentes e ranking entre os corretores da plataforma.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(41,182,246,.1)">💬</div>
+        <h3>Assistente WhatsApp</h3>
+        <p>Cadastre imóveis, veja seus matches e receba notificações direto no WhatsApp — sem precisar abrir o sistema.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GRAFO -->
+<section class="grafo-section">
+  <div class="grafo-inner">
+    <div>
+      <div class="section-label">Exclusivo Permutaí</div>
+      <h2>O grafo que muda o jogo</h2>
+      <p style="font-size:16px;color:#94A3B8;line-height:1.7;margin:16px 0 16px">Permuta simples é fácil. O difícil é quando o imóvel A precisa ir para B, B precisa ir para C, e C fecha o ciclo voltando para A. Isso é triangulação — e nenhum corretor consegue calcular isso manualmente.</p>
+      <p style="font-size:16px;color:#94A3B8;line-height:1.7;margin-bottom:32px">O algoritmo da Permutaí mapeia essas cadeias automaticamente e avisa os três corretores ao mesmo tempo. Uma operação que seria impossível de encontrar sem tecnologia.</p>
+      <a href="https://permutai.lovable.app" class="btn-primary">Ver demonstração ao vivo</a>
+    </div>
+    <div class="grafo-visual">
+      <div style="font-size:12px;font-weight:600;color:#29B6F6;text-transform:uppercase;letter-spacing:.5px;margin-bottom:20px">Triangulação ativa — exemplo real</div>
+      <div class="node-grid">
+        <div class="node"><div class="node-type">🏠</div><div class="node-name">Apto 3Q</div><div class="node-val">SJC · R$ 650k</div></div>
+        <div class="node-connector"><div class="conn-dot"></div><div class="conn-line-h"></div><div class="conn-dot"></div></div>
+        <div class="node"><div class="node-type">🏡</div><div class="node-name">Casa 4Q</div><div class="node-val">Caç. · R$ 680k</div></div>
+        <div class="grafo-row-spacer"></div>
+        <div class="node-connector"><div class="conn-dot"></div><div class="conn-line-v"></div><div class="conn-dot"></div></div>
+        <div style="display:flex;align-items:center;justify-content:center"><div style="width:2px;height:64px;background:linear-gradient(180deg,#29B6F6,#1E90FF)"></div></div>
+        <div class="node-connector"><div class="conn-dot"></div><div class="conn-line-v"></div><div class="conn-dot"></div></div>
+        <div class="grafo-row-spacer"></div>
+        <div class="node"><div class="node-type">🌳</div><div class="node-name">Terreno</div><div class="node-val">Jac. · R$ 620k</div></div>
+        <div class="node-connector"><div class="conn-dot"></div><div class="conn-line-h"></div><div class="conn-dot"></div></div>
+        <div class="node"><div class="node-type">🏢</div><div class="node-name">Sala Com.</div><div class="node-val">SJC · R$ 590k</div></div>
+      </div>
+      <div class="grafo-badge"><span>3 corretores notificados simultaneamente</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- DEPOIMENTOS -->
+<section class="depoimentos">
+  <div class="depo-inner">
+    <div style="text-align:center;margin-bottom:8px"><div class="section-label" style="display:inline-block">Embaixadores</div></div>
+    <h2 style="text-align:center;font-size:clamp(1.6rem,3vw,2.4rem);font-weight:800;color:#0A1628;margin-bottom:8px">O que os primeiros corretores dizem</h2>
+    <p style="text-align:center;color:#94A3B8;font-size:16px;line-height:1.6">Resultados dos primeiros embaixadores do Vale do Paraíba</p>
+    <div class="depo-grid">
+      <div class="depo-card">
+        <div class="depo-stars">★★★★★</div>
+        <p class="depo-text">"Tinha um apartamento parado há 8 meses. Cadastrei na Permutaí e em 3 dias apareceu um match com uma casa em Jacareí. O cliente adorou a proposta de permuta. Não tem ferramenta igual."</p>
+        <div class="depo-author">
+          <div class="depo-avatar" style="background:#1565C0">RM</div>
+          <div><div class="depo-name">Ricardo M.</div><div class="depo-role">Corretor autônomo · SJC</div></div>
+        </div>
+      </div>
+      <div class="depo-card">
+        <div class="depo-stars">★★★★★</div>
+        <p class="depo-text">"A triangulação me surpreendeu. Três imóveis que nenhum de nós conseguiria cruzar sozinho — o sistema encontrou a cadeia completa. Fechamos a operação em 2 semanas."</p>
+        <div class="depo-author">
+          <div class="depo-avatar" style="background:#29B6F6">AS</div>
+          <div><div class="depo-name">Ana S.</div><div class="depo-role">Corretora · Caçapava</div></div>
+        </div>
+      </div>
+      <div class="depo-card">
+        <div class="depo-stars">★★★★★</div>
+        <p class="depo-text">"Cadastrei 15 imóveis da minha carteira em uma tarde. No dia seguinte já tinha 4 matches. Nunca imaginei que permuta pudesse ser tão simples de encontrar."</p>
+        <div class="depo-author">
+          <div class="depo-avatar" style="background:#10B981">PT</div>
+          <div><div class="depo-name">Paulo T.</div><div class="depo-role">Corretor · Jacareí</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-final">
+  <div class="cta-inner">
+    <div class="promo-badge" style="margin:0 auto 24px;display:inline-flex"><span>Vagas limitadas — Vale do Paraíba</span></div>
+    <h2>Comece agora.<br>Grátis para embaixadores.</h2>
+    <p>Cadastre-se, coloque seus imóveis e o algoritmo começa a trabalhar por você. A cada 10 imóveis novos, renova mais 30 dias de Pro gratuitamente.</p>
+    <div class="cta-btns">
+      <a href="https://permutai.lovable.app" class="btn-primary" style="font-size:17px;padding:18px 48px">Criar minha conta grátis</a>
+    </div>
+    <p class="cta-sub">Sem cartão de crédito &nbsp;·&nbsp; Sem fidelidade &nbsp;·&nbsp; Cancele quando quiser</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-brand">Permuta<span>í</span></div>
+        <p class="footer-desc">A primeira plataforma de permuta imobiliária inteligente do Vale do Paraíba. Match automático entre corretores.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Plataforma</h4>
+        <ul>
+          <li><a href="#como-funciona">Como funciona</a></li>
+          <li><a href="#features">Funcionalidades</a></li>
+          <li><a href="#embaixador">Programa embaixador</a></li>
+          <li><a href="https://permutai.lovable.app/login">Entrar</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contato</h4>
+        <ul>
+          <li><a href="https://permutai.lovable.app">Criar conta</a></li>
+          <li><a href="#">WhatsApp</a></li>
+          <li><a href="#">São José dos Campos</a></li>
+          <li><a href="#">Vale do Paraíba — SP</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2026 Permutaí · Permuta Inteligente · Vale do Paraíba · SP</span>
+      <span class="footer-copy">Todos os direitos reservados</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Animação da barra de progresso
+window.addEventListener('load', function() {
+  setTimeout(function() {
+    var bar = document.getElementById('progressBar');
+    if (bar) bar.style.width = '60%';
+  }, 500);
+});
+
+// Nav shadow on scroll
+window.addEventListener('scroll', function() {
+  var nav = document.querySelector('nav');
+  if (window.scrollY > 50) {
+    nav.style.boxShadow = '0 4px 24px rgba(0,0,0,.3)';
+  } else {
+    nav.style.boxShadow = 'none';
+  }
+});
+
+// Smooth scroll para links internos
+document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+  anchor.addEventListener('click', function(e) {
+    e.preventDefault();
+    var target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+
+// Fade-in nas seções
+var observer = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
+    if (entry.isIntersecting) {
+      entry.target.style.opacity = '1';
+      entry.target.style.transform = 'translateY(0)';
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.step, .feature-card, .depo-card, .promo-card').forEach(function(el) {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(20px)';
+  el.style.transition = 'opacity .5s ease, transform .5s ease';
+  observer.observe(el);
+});
+</script>
+</body>
+</html>
